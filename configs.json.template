@@ -1,0 +1,43 @@
+{
+    "eslaticsearch" : [{"host": "localhost", "port": "9200"}],
+    "index" : "topbeat-*",
+    "interval" : 10,
+    "search" : {
+       "query" : {
+            "bool" : {
+              "must" : [
+              {
+                "range": {
+                  "cpu.system": {
+                    "gte": "16246"
+                  }
+                }
+              },
+              {
+                "range": {
+                  "@timestamp": {
+                    "gt" : "now-10s"
+                  }
+                }
+              }]
+            }
+        }
+    },
+
+    "actions":{
+      "gmail" : {
+          "from" : {
+              "user": "fromuser@gmail.com",
+              "pass": "123456"
+          },
+          "to" : {
+              "user": "touser@gmail.com"
+          },
+          "msg" : "Reponse: {response[hits][total]} hits"
+      },
+      "logs": {
+        "format" : "Reponse: {response[hits][total]} hits"
+      }
+    }
+
+}
