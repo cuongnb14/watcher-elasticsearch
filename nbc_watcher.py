@@ -51,23 +51,23 @@ class Watcher:
         def send_gmail_action(response):
             msg = MIMEMultipart()
             msg['Subject'] = 'NBC Watcher Notification'
-            msg['From'] = self.configs["gmail"]["from"]["user"]
-            msg['To'] = self.configs["gmail"]["to"]["user"]
-            text_msg = MIMEText(self.configs["gmail"]["msg"].format(response=response), 'plain')
+            msg['From'] = self.configs["action"]["gmail"]["from"]["user"]
+            msg['To'] = self.configs["action"]["gmail"]["to"]["user"]
+            text_msg = MIMEText(self.configs["action"]["gmail"]["msg"].format(response=response), 'plain')
             msg.attach(text_msg)
 
             gmail = smtplib.SMTP('smtp.gmail.com:587')
             gmail.ehlo()
             gmail.starttls()
-            gmail.login(self.configs["gmail"]["from"]["user"], self.configs["gmail"]["from"]["pass"])
-            gmail.sendmail(self.configs["gmail"]["from"]["user"], self.configs["gmail"]["to"]["user"], msg)
+            gmail.login(self.configs["action"]["gmail"]["from"]["user"], self.configs["action"]["gmail"]["from"]["pass"])
+            gmail.sendmail(self.configs["action"]["gmail"]["from"]["user"], self.configs["action"]["gmail"]["to"]["user"], msg)
             gmail.quit()
         self.add_action(send_gmail_action)
 
-    def test_action(self):
-        def test_action(response):
-            print(self.configs["gmail"]["msg"].format(response=response))
-        self.add_action(test_action)
+    def send_to_logs_action(self):
+        def to_logs_action(response):
+            self.logger.info(self.configs["action"]["logs"]["format"].format(response=response))
+        self.add_action(to_logs_action)
 
     def watching(self):
         """Query logs in eslaticsearch and compare condition then implement action"""
