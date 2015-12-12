@@ -33,10 +33,10 @@
           "to" : {
               "user": "touser@gmail.com"
           },
-          "msg" : "Reponse: {response[hits][total]} hits"
+          "msg" : "Response: {response[hits][total]} hits"
       },
-      "logs": {
-        "format" : "Reponse: {response[hits][total]} hits"
+      "log": {
+        "format" : "Response: {response[hits][total]} hits"
       }
     }
 
