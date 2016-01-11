@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 
 import schedule
 from elasticsearch import Elasticsearch
+from apscheduler.schedulers.background import BlockingScheduler
 
 
 class Watcher:
@@ -22,6 +23,8 @@ class Watcher:
 
         @param string config_files, name of file json config
         """
+        logging.getLogger("apscheduler.executors.default").setLevel("ERROR")
+        logging.getLogger("elasticsearch").setLevel("ERROR")
         self.logger = logging.getLogger(__name__)
         self.logger.info("Loading config file...")
         with open(config_file) as config_file:
@@ -98,6 +101,9 @@ class Watcher:
     def run(self):
         """Run watcher"""
         self.logger.info("Running watcher ...")
-        schedule.every(self.config["interval"]).seconds.do(self.watching)
-        while True:
-            schedule.run_pending()
+        scheduler = BlockingScheduler()
+        scheduler.add_job(self.watching, 'interval', seconds=self.config["interval"])
+        try:
+            scheduler.start()
+        except (KeyboardInterrupt, SystemExit):
+            pass
